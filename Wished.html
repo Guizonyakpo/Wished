@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Joyeux Anniversaire 💙</title>
+  <meta name="theme-color" content="#0ea5e9" />
+  <meta name="description" content="Une petite surprise d'anniversaire, spécialement pour toi 💙" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --primary: #8b5cf6;    /* violet vif */
+      --accent: #d946ef;     /* rose électrique */
+      --gradient1: #c026d3;  /* violet-rose */
+      --gradient2: #7c3aed;  /* violet profond */
+      --white: #ffffff;
+      --bg: #fdf4ff;        /* fond rose pâle */
+      --text: #2d1b69;      /* violet foncé */
+      --shadow: 0 10px 30px rgba(192, 38, 211, 0.2);
+      --glow: 0 0 20px rgba(217, 70, 239, 0.15);
+    }
+  *{box-sizing:border-box}
+  /* utilitaires d'accessibilité */
+  .sr-only{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+  html,body{height:100%;}
+    body{
+      margin:0; font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial;
+      color:var(--text); background: linear-gradient(135deg, var(--bg) 0%, #ffffff 50%, var(--bg) 100%);
+      display:flex; align-items:center; justify-content:center; padding:24px;
+    }
+    .app{
+      width:100%; max-width: 560px; background:var(--white); border-radius:24px; box-shadow:var(--shadow);
+      overflow:hidden; position:relative; isolation:isolate;
+      backdrop-filter: blur(12px); background: rgba(255,255,255,0.85);
+      border: 1px solid rgba(217, 70, 239, 0.1);
+    }
+    .header{
+      padding:28px 20px 12px; text-align:center; position:relative;
+      background: radial-gradient(120% 120% at 50% 0%, rgba(192, 38, 211, 0.12) 0%, rgba(192, 38, 211, 0) 60%);
+    }
+    .date-chip{display:inline-block; padding:6px 12px; border-radius:999px; background:rgba(192, 38, 211, 0.12); color:#86198f; font-size:12px; font-weight:600; letter-spacing:.3px}
+    h1{margin:10px 0 6px; font-size:clamp(24px, 6vw, 40px); line-height:1.1; color:var(--gradient1); text-shadow:var(--glow)}
+    .subtitle{margin:0; opacity:.8}
+
+    .stage{ position:relative; padding:18px 18px 26px; }
+    .gift-area{ display:grid; place-items:center; gap:12px; }
+
+    /* Gift box */
+    .gift{
+      --s: 140px;
+      width: var(--s); height: calc(var(--s) * .85); position:relative; cursor:pointer;
+      transform-style:preserve-3d; perspective:800px;
+    }
+    /* boîte en "3D" : face avant + côté pour une illusion 3D simple */
+    .gift .box{ position:absolute; inset:20px 0 0; border-radius:14px; border:2px solid #b6ddff; transform-style:preserve-3d; }
+    .gift .box .front{
+      position:absolute; left:0; right:0; top:0; bottom:0;
+      background:linear-gradient(165deg, #fdf4ff 0%, #f5d0fe 100%); 
+      border-radius:12px; box-shadow: inset 0 -6px 12px rgba(192, 38, 211, 0.08);
+    }
+    .gift .box .side{
+      position:absolute; top:6px; right:-18px; width:18px; bottom:6px; border-radius:0 10px 10px 0;
+      background: linear-gradient(180deg, #f5d0fe 0%, #f0abfc 100%); 
+      transform:skewY(-8deg); box-shadow: -6px 6px 14px rgba(192, 38, 211, 0.06);
+    }
+    .gift .ribbon-vert{ position:absolute; inset:20px 0 0; width:24px; left:50%; transform:translateX(-50%); background:linear-gradient(180deg, var(--primary), var(--gradient2)); border-radius:10px;}
+    .gift .ribbon-hz{ position:absolute; left:0; right:0; top:54%; height:24px; background:linear-gradient(90deg, var(--gradient1), var(--gradient2));}
+    .gift .lid{
+      position:absolute; left:-6px; right:-6px; top:-6px; height:42px;
+      background:linear-gradient(180deg, #e6f4ff 0%, #d8edff 100%); border:2px solid #b6ddff; border-radius:14px;
+      display:grid; place-items:center; transform-origin: left bottom; transition: transform .7s cubic-bezier(.2,.8,.2,1);
+    }
+    .gift.open .lid{ transform: rotateX(70deg) translateY(-6px) translateZ(0); }
+    .gift .bow{width:64px; height:30px; background:linear-gradient(180deg, var(--blue-600), var(--blue-700)); border-radius:999px; position:relative;}
+    .gift .bow:before, .gift .bow:after{content:""; position:absolute; width:30px; height:30px; border:8px solid var(--blue-600); border-radius:50%; top:-16px}
+    .gift .bow:before{ left:-18px }
+    .gift .bow:after{ right:-18px }
+
+  .hint{font-size:13px; opacity:.7; text-align:center}
+
+  /* styles de focus visibles pour l'accessibilité clavier */
+  :focus{outline: none}
+  .gift:focus-visible, .btn:focus-visible{outline:3px solid rgba(14,165,233,.28); box-shadow:0 6px 18px rgba(2,132,199,.12)}
+
+    /* Message card */
+    .card{ 
+      width:min(92%, 460px); margin:10px auto 0; background:linear-gradient(180deg, #ffffff, #f2faff);
+      border:1px solid #e0f0ff; border-radius:18px; padding:16px 16px 12px; display:none;
+    }
+    .card.show{ display:block; animation: pop .5s ease-out; }
+    @keyframes pop{ from{ transform:scale(.95); opacity:0 } to{ transform:scale(1); opacity:1 } }
+
+    .card h2{margin:0 0 6px; font-size:20px; color:#075985}
+    .card p{margin:0 0 8px; line-height:1.5}
+    .actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:8px}
+    .btn{
+      appearance:none; border:none; border-radius:999px; padding:12px 16px; font-weight:700; cursor:pointer;
+      background: linear-gradient(90deg, var(--gradient1), var(--gradient2)); 
+      color:#fff; box-shadow: 0 6px 18px rgba(192, 38, 211, 0.25);
+      transition: all 0.3s ease;
+    }
+    .btn:hover{ transform:translateY(-2px); box-shadow: 0 8px 20px rgba(192, 38, 211, 0.3); }
+    .btn.secondary{ background:#fdf4ff; color:#86198f; border:1px solid rgba(192, 38, 211, 0.2) }
+    .btn.secondary:hover{ background:#fcebff; }
+
+    /* Floating hearts & confetti layers */
+    .fx-layer{ position:absolute; inset:0; pointer-events:none; overflow:hidden; z-index:2; }
+    .heart{ position:absolute; font-size:18px; animation: floatUp 4.5s linear forwards; opacity:.9 }
+    @keyframes floatUp{ to{ transform: translateY(-120vh) scale(1.3); opacity:0 } }
+    
+    /* Animation du gros bisou */
+    .bisou-man {
+      position: absolute; font-size:40px; z-index:3;
+      animation: popOut 0.5s ease-out forwards;
+      transform-origin: bottom center;
+    }
+    .big-kiss {
+      position: absolute; font-size:30px;
+      animation: growKiss 1.5s ease-out forwards;
+    }
+    @keyframes popOut {
+      0% { transform: translateY(50%) scale(0); }
+      60% { transform: translateY(-20%) scale(1.2); }
+      100% { transform: translateY(-10%) scale(1); }
+    }
+    @keyframes growKiss {
+      0% { transform: scale(1); opacity:1; }
+      60% { transform: scale(5); opacity:0.8; }
+      100% { transform: scale(10); opacity:0; }
+    }
+    
+    /* Animation explosion cadeau */
+    @keyframes explode {
+      0% { transform: scale(1) rotate(0); }
+      50% { transform: scale(1.2) rotate(-5deg); }
+      100% { transform: scale(1.4) rotate(5deg); opacity:0; }
+    }
+    .gift.exploding .box,
+    .gift.exploding .lid,
+    .gift.exploding .ribbon-vert,
+    .gift.exploding .ribbon-hz {
+      animation: explode 0.4s ease-out forwards;
+    }
+    canvas#confetti{ position:absolute; inset:0; z-index:1; pointer-events:none }
+
+  /* animations de secousse */
+  @keyframes shake-weak{ 0%{transform:translateY(0) rotateX(0) rotateY(0)} 25%{transform:translateY(-2px) rotateZ(-1deg)} 50%{transform:translateY(0) rotateZ(1deg)} 75%{transform:translateY(-1px) rotateZ(-.6deg)} 100%{transform:translateY(0) rotateZ(0)} }
+  @keyframes shake-strong{ 0%{transform:translateY(0) rotateZ(0)} 20%{transform:translateY(-6px) rotateZ(-6deg)} 40%{transform:translateY(4px) rotateZ(6deg)} 60%{transform:translateY(-3px) rotateZ(-4deg)} 80%{transform:translateY(2px) rotateZ(2deg)} 100%{transform:translateY(0) rotateZ(0)} }
+  .gift.idle{ animation: shake-weak 2.6s ease-in-out infinite; }
+  .gift.shake-strong{ animation: shake-strong .6s ease-in-out 1; }
+
+    /* Étoiles flottantes */
+    .stars{ position:fixed; inset:0; pointer-events:none; z-index:0 }
+    .star{
+      position:absolute; width:2px; height:2px; background:var(--accent);
+      animation: twinkle var(--d, 4s) ease-in-out infinite;
+      opacity:0; border-radius:50%;
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity:0; transform:scale(0.5) }
+      50% { opacity:0.8; transform:scale(1.2) }
+    }
+
+    /* Footer note */
+    .foot{ text-align:center; padding:10px 16px 18px; font-size:12px; color:#86198f; opacity:.8 }
+
+    /* Responsive tweaks */
+    @media (min-width: 480px){ .stage{ padding:24px 24px 30px } }
+  </style>
+</head>
+<body>
+  <main class="app" role="main">
+    <header class="header">
+      <span class="date-chip" id="dateChip">🎂 Anniversaire • 12 novembre</span>
+      <h1>Joyeux anniversaire, mon amour 💙</h1>
+      <p class="subtitle">J'ai préparé une petite surprise rien que pour toi…</p>
+    </header>
+
+    <section class="stage" aria-labelledby="gift-title">
+      <h2 id="gift-title" class="sr-only" style="position:absolute;left:-9999px;">Cadeau animé</h2>
+
+      <div class="gift-area">
+        <div class="gift idle" id="gift" aria-label="Ouvrir le cadeau" role="button" tabindex="0">
+          <div class="lid"><div class="bow"></div></div>
+          <div class="box" aria-hidden="true">
+            <div class="front"></div>
+            <div class="side"></div>
+          </div>
+          <div class="ribbon-vert"></div>
+          <div class="ribbon-hz"></div>
+        </div>
+        <p class="hint">Appuie sur Entrée ou Espace pour l'ouvrir ✨</p>
+      </div>
+
+      <div class="fx-layer" id="fx"></div>
+      <canvas id="confetti" aria-hidden="true" tabindex="-1"></canvas>
+
+      <article class="card" id="card" aria-live="polite">
+        <h2>Pour toi 💙</h2>
+        <p id="wishText">
+          Aujourd'hui, le 12 novembre, je célèbre la plus belle des personnes : toi. Que cette nouvelle année t'apporte joie, santé, succès et
+          une pluie d'étreintes bleues et blanches. Merci d'illuminer ma vie. Je t'aime plus que tout.
+        </p>
+        <div class="actions">
+          <button class="btn" id="babyBtn">👶 Appuie bébé</button>
+          <button class="btn" id="speakBtn">▶ Écouter mon message</button>
+        </div>
+      </article>
+    </section>
+
+    <div class="foot">Conçu avec tout mon amour • Bleu & blanc pour toi 💙🤍</div>
+  </main>
+
+  <script>
+    // ====== Personnalisation rapide ======
+    const NOM = "ma chérie"; // Change le prénom si tu veux
+    const DATE_CELEBRATION = new Date('2025-11-12T00:00:00'); // 12 novembre (année modifiable)
+    const MESSAGE = `En ce jour magique de 2025, je célèbre la plus extraordinaire des personnes : toi. ✨ Que cette nouvelle année soit remplie d'étoiles dans tes yeux, de rires qui résonnent comme des carillons d'argent, et de moments aussi brillants que les constellations du ciel nocturne. Tu es mon étoile la plus précieuse, celle qui guide mes pas et illumine mon chemin. Je t'aime infiniment. 💜`;
+
+    // Injecte le nom et le message si besoin
+    document.querySelector('h1').textContent = `Joyeux anniversaire, ${NOM} 💙`;
+    document.getElementById('wishText').textContent = MESSAGE;
+
+    // Badge date (compte à rebours si avant la date)
+    (function updateDateChip(){
+      const chip = document.getElementById('dateChip');
+      const now = new Date();
+      const diff = DATE_CELEBRATION.getTime() - now.getTime();
+      if(diff > 0){
+        const d = Math.ceil(diff / (1000*60*60*24));
+        chip.textContent = `🎂 Anniversaire dans ${d} jour${d>1?'s':''} • 12 novembre`;
+      } else {
+        chip.textContent = `🎂 Anniversaire • 12 novembre`;
+      }
+    })();
+
+    // ====== Restreindre les clics et menu contextuel ======
+    // But: on permet toujours les interactions sur les éléments explicitement interactifs
+    (function restrictPageClicks(){
+      // Empêche le menu contextuel (clic droit) sur toute la page
+      document.addEventListener('contextmenu', (e)=>{ e.preventDefault(); }, {passive:false});
+
+      // Bloque les clics qui ne proviennent pas d'éléments interactifs (boutons, liens, la boîte, etc.)
+      document.addEventListener('click', (e)=>{
+        const allowed = e.target.closest('.gift, .btn, a, button, input, textarea, select');
+        if(!allowed){
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      }, true);
+    })();
+
+    // ====== Cadeau, coeurs et confettis ======
+    const gift = document.getElementById('gift');
+    const card = document.getElementById('card');
+    const fxLayer = document.getElementById('fx');
+
+    function openGift(){
+      if(gift.classList.contains('open')) return; // évite double clic
+      // enlève l'animation idle et provoque une secousse forte avant d'ouvrir
+      gift.classList.remove('idle');
+      gift.classList.add('shake-strong');
+      navigator.vibrate?.([30,60,30]);
+      setTimeout(()=>{
+        gift.classList.remove('shake-strong');
+        gift.classList.add('open');
+        card.classList.add('show');
+        burstHearts(24);
+        startConfetti(120);
+        navigator.vibrate?.(40);
+      }, 600);
+    }
+
+    gift.addEventListener('click', openGift);
+    gift.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); openGift(); }});
+
+    // Effet automatique toutes les 5 secondes une fois le cadeau ouvert
+    function playMagicEffect() {
+      if(gift.classList.contains('open')) {
+        burstHearts(18);
+        startConfetti(90);
+        navigator.vibrate?.([10,40,10]);
+      }
+    }
+    
+    // Démarre l'effet automatique après l'ouverture du cadeau
+    const autoPlayInterval = setInterval(playMagicEffect, 5000);
+
+    // Effet spécial "Appuie bébé"
+    document.getElementById('babyBtn').addEventListener('click', function() {
+      // Secoue violemment le cadeau
+      gift.classList.add('shake-strong');
+      navigator.vibrate?.([100,50,100,50,200]);
+      
+      setTimeout(() => {
+        // Explosion du cadeau
+        gift.classList.add('exploding');
+        
+        // Ajoute le bonhomme qui sort
+        const man = document.createElement('div');
+        man.className = 'bisou-man';
+        man.textContent = '👨';
+        man.style.left = '50%';
+        man.style.bottom = '30%';
+        man.style.transform = 'translateX(-50%)';
+        fxLayer.appendChild(man);
+        
+        // Ajoute le gros bisou qui grandit
+        setTimeout(() => {
+          const kiss = document.createElement('div');
+          kiss.className = 'big-kiss';
+          kiss.textContent = '💋';
+          kiss.style.left = '50%';
+          kiss.style.top = '40%';
+          kiss.style.transform = 'translateX(-50%)';
+          fxLayer.appendChild(kiss);
+          
+          // Ajoute un gros cœur qui grandit
+          const bigHeart = document.createElement('span');
+          bigHeart.className = 'heart';
+          bigHeart.textContent = '❤️';
+          bigHeart.style.left = '50%';
+          bigHeart.style.bottom = '50%';
+          bigHeart.style.transform = 'translateX(-50%)';
+          bigHeart.style.fontSize = '50px';
+          bigHeart.style.animation = 'growKiss 2s ease-out forwards';
+          fxLayer.appendChild(bigHeart);
+          
+          // Nettoie après l'animation
+          setTimeout(() => {
+            man.remove();
+            kiss.remove();
+            bigHeart.remove();
+            gift.classList.remove('exploding', 'shake-strong');
+          }, 2000);
+        }, 500);
+      }, 600);
+    });
+
+    function burstHearts(n=16){
+      for(let i=0;i<n;i++){
+        const span = document.createElement('span');
+        span.className = 'heart';
+        span.textContent = Math.random() > .5 ? '💙' : '🤍';
+        span.style.left = Math.random()*100 + '%';
+        span.style.bottom = '-10%';
+        span.style.filter = 'drop-shadow(0 6px 12px rgba(2,132,199,.2))';
+        span.style.animationDuration = (3.5 + Math.random()*2) + 's';
+        span.style.fontSize = (16 + Math.random()*18) + 'px';
+        fxLayer.appendChild(span);
+        setTimeout(()=> span.remove(), 5000);
+      }
+    }
+
+    // Simple confetti on canvas
+    const canvas = document.getElementById('confetti');
+    const ctx = canvas.getContext('2d');
+    let confettiPieces = []; let anim;
+    function resize(){ canvas.width = canvas.clientWidth; canvas.height = canvas.clientHeight; }
+    window.addEventListener('resize', resize, {passive:true});
+    new ResizeObserver(resize).observe(canvas);
+    resize();
+
+    function startConfetti(count=100){
+      confettiPieces.push(...Array.from({length:count}, ()=>({
+        x: Math.random()*canvas.width,
+        y: -10,
+        r: 4+Math.random()*6,
+        c: Math.random()>.5 ? '#0ea5e9' : '#e6f4ff',
+        v: 1+Math.random()*2,
+        drift: (Math.random()-.5)*1.2,
+        rot: Math.random()*Math.PI,
+        vr: (Math.random()-.5)*0.2
+      })));
+      if(!anim){ anim = requestAnimationFrame(tick); }
+      setTimeout(()=>{ confettiPieces.splice(0, count); }, 4000);
+    }
+
+    function tick(){
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      confettiPieces.forEach(p=>{
+        p.y += p.v; p.x += p.drift; p.rot += p.vr;
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot);
+        ctx.fillStyle = p.c; 
+        ctx.fillRect(-p.r/2, -p.r/2, p.r, p.r*0.6);
+        ctx.restore();
+      });
+      anim = confettiPieces.length ? requestAnimationFrame(tick) : (cancelAnimationFrame(anim), anim=null);
+    }
+
+    // ====== Lecture vocale du message ======
+    const speakBtn = document.getElementById('speakBtn');
+    let speaking = false; let utterance;
+    speakBtn.addEventListener('click', ()=>{
+      if(!('speechSynthesis' in window)){
+        alert("La lecture vocale n'est pas disponible sur ce téléphone.");
+        return;
+      }
+      if(speaking){
+        window.speechSynthesis.cancel(); speaking=false; speakBtn.textContent='▶ Écouter mon message'; return;
+      }
+      utterance = new SpeechSynthesisUtterance(MESSAGE);
+      utterance.lang = 'fr-FR';
+      utterance.rate = 1; utterance.pitch = 1;
+      utterance.onend = ()=>{ speaking=false; speakBtn.textContent='▶ Écouter mon message'; };
+      speaking = true; speakBtn.textContent='⏸ Arrêter';
+      window.speechSynthesis.speak(utterance);
+    });
+
+    // Option: déclenchement auto si on ouvre via lien partagé (autoplay bloqué sur certains appareils)
+    document.addEventListener('visibilitychange', ()=>{
+      if(document.visibilityState==='visible' && !gift.classList.contains('open')){
+        // On peut décider d'ouvrir automatiquement le cadeau le jour J
+        const now = new Date();
+        if(now.getMonth()===10 && now.getDate()===12){ // 12 novembre (mois 10)
+          setTimeout(openGift, 700);
+        }
+      }
+    });
+  </script>
+</body>
+</html>
