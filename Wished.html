@@ -126,9 +126,24 @@
       100% { transform: translateY(-10%) scale(1); }
     }
     @keyframes growKiss {
-      0% { transform: scale(1); opacity:1; }
-      60% { transform: scale(5); opacity:0.8; }
-      100% { transform: scale(10); opacity:0; }
+      0% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity:1; }
+      60% { transform: translate(-50%, -50%) scale(3) rotate(20deg); opacity:0.8; }
+      100% { transform: translate(-50%, -50%) scale(5) rotate(45deg); opacity:0; }
+    }
+    @keyframes kissFloat {
+      0% { transform: translate(var(--tx, 0), 0) scale(1) rotate(0deg); opacity:0; }
+      10% { opacity:1; }
+      40% { transform: translate(calc(var(--tx, 0) * 1.2), calc(var(--ty, 0) * 0.4)) scale(1.2) rotate(calc(var(--r, 0deg) * 0.5)); opacity:0.9; }
+      100% { transform: translate(var(--tx, 0), var(--ty, -100vh)) scale(0.5) rotate(var(--r, 0deg)); opacity:0; }
+    }
+    @keyframes miniKissFloat {
+      0% { transform: translate(0, 0) scale(0.8); opacity:0; }
+      30% { opacity:1; }
+      100% { transform: translate(var(--mtx, 50px), var(--mty, -50px)) scale(0.3); opacity:0; }
+    }
+    @keyframes sparkle {
+      0%, 100% { opacity:0; transform:scale(0.5) rotate(0deg); }
+      50% { opacity:1; transform:scale(1.2) rotate(180deg); }
     }
     
     /* Animation explosion cadeau */
@@ -201,7 +216,8 @@
         <h2>Pour toi 💙</h2>
         <p id="wishText">
           Aujourd'hui, le 12 novembre, je célèbre la plus belle des personnes : toi. Que cette nouvelle année t'apporte joie, santé, succès et
-          une pluie d'étreintes bleues et blanches. Merci d'illuminer ma vie. Je t'aime plus que tout.
+          une pluie de bénédiction d'étreintes bleues et blanches. Merci d'illuminer ma vie. Je t'aime plus que tout.
+          joyeux anniversaire wunder .
         </p>
         <div class="actions">
           <button class="btn" id="babyBtn">👶 Appuie bébé</button>
@@ -309,13 +325,72 @@
         
         // Ajoute le gros bisou qui grandit
         setTimeout(() => {
-          const kiss = document.createElement('div');
-          kiss.className = 'big-kiss';
-          kiss.textContent = '💋';
-          kiss.style.left = '50%';
-          kiss.style.top = '40%';
-          kiss.style.transform = 'translateX(-50%)';
-          fxLayer.appendChild(kiss);
+          // Fonction pour créer une étincelle
+          function createSparkle(x, y) {
+            const sparkle = document.createElement('div');
+            sparkle.innerHTML = '✨';
+            sparkle.style.position = 'absolute';
+            sparkle.style.left = x + 'px';
+            sparkle.style.top = y + 'px';
+            sparkle.style.fontSize = '12px';
+            sparkle.style.animation = `sparkle ${0.5 + Math.random() * 0.5}s ease-in-out`;
+            fxLayer.appendChild(sparkle);
+            setTimeout(() => sparkle.remove(), 1000);
+          }
+
+          // Fonction pour créer un mini bisou
+          function createMiniKiss(x, y) {
+            const miniKiss = document.createElement('div');
+            miniKiss.textContent = '💋';
+            miniKiss.style.position = 'absolute';
+            miniKiss.style.left = x + 'px';
+            miniKiss.style.top = y + 'px';
+            miniKiss.style.fontSize = '14px';
+            miniKiss.style.setProperty('--mtx', (Math.random() - 0.5) * 100 + 'px');
+            miniKiss.style.setProperty('--mty', (-30 - Math.random() * 50) + 'px');
+            miniKiss.style.animation = 'miniKissFloat 1s ease-out forwards';
+            fxLayer.appendChild(miniKiss);
+            setTimeout(() => miniKiss.remove(), 1000);
+          }
+
+          // Création d'une pluie de bisous
+          for(let i = 0; i < 25; i++) {
+            const kiss = document.createElement('div');
+            kiss.className = 'big-kiss';
+            kiss.textContent = '💋';
+            
+            // Position et animation aléatoires
+            const tx = (Math.random() - 0.5) * 300; // plus grande dispersion horizontale
+            const ty = -300 - Math.random() * 200; // hauteur de vol variable
+            const delay = Math.random() * 0.8; // délai plus long
+            const rotation = (Math.random() - 0.5) * 360; // rotation complète possible
+            
+            kiss.style.position = 'absolute';
+            kiss.style.left = '50%';
+            kiss.style.top = '40%';
+            kiss.style.setProperty('--tx', tx + 'px');
+            kiss.style.setProperty('--ty', ty + 'px');
+            kiss.style.setProperty('--r', rotation + 'deg');
+            kiss.style.animation = `kissFloat 2.5s ${delay}s ease-out forwards`;
+            kiss.style.fontSize = (20 + Math.random() * 30) + 'px';
+            
+            fxLayer.appendChild(kiss);
+            
+            // Ajoute des étincelles et mini bisous pendant le vol
+            const sparkleInterval = setInterval(() => {
+              const rect = kiss.getBoundingClientRect();
+              createSparkle(rect.left + rect.width/2, rect.top + rect.height/2);
+              if(Math.random() > 0.7) {
+                createMiniKiss(rect.left + rect.width/2, rect.top + rect.height/2);
+              }
+            }, 100);
+            
+            // Nettoyage
+            setTimeout(() => {
+              kiss.remove();
+              clearInterval(sparkleInterval);
+            }, 3500);
+          }
           
           // Ajoute un gros cœur qui grandit
           const bigHeart = document.createElement('span');
